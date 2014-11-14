@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:Shailendra Singh <goforsunny1993@gmail.com>
+	Copyright (C) 2014-* Shailendra Singh <goforsunny1993@gmail.com>
+-->
+
+<language id="xos" _name="XOS" version="1.0" _section="Others">
+	<metadata>
+		<property name="mimetypes">text/x-xos</property>
+		<property name="globs">*.spl;*.apl;</property>
+		<property name="line-comment-start">//</property>
+	</metadata>
+	<styles>
+			<style id="comment" _name="Comment" map-to="def:comment"/>
+			<style id="decimal" _name="Decimal number" map-to="def:decimal"/>
+	    <style id="string" _name="String" map-to="def:string"/>
+	    <style id="keyword" _name="Keyword" map-to="def:keyword"/>
+	    <style id="rule" _name="rule" map-to="def:identifier"/>
+	    <style id="type" _name="Data Type" map-to="def:type"/>
+	    <style id="common-defines" _name="Common Defines" map-to="def:special-constant"/>
+	</styles>
+
+	<definitions>
+		<!-- for comments -->
+			<context id="comment" style-ref="comment" end-at-line-end="true" class="comment" class-disabled="no-spell-check">
+     		 <start>//</start>
+        			<include>
+          				<context ref="def:in-line-comment"/>
+        			</include>
+   		</context>
+
+   	<!-- for strings -->
+   		<context id="escape-seq" style-ref="escape">
+      		<match>\%{char-esc}</match>
+    	</context>
+
+   		<context id="string" style-ref="string">
+     		<start>"</start>
+      			<end>"</end>
+      				<include>
+      				  <context ref="escape-seq"/>
+      				</include>
+    	</context>
+
+    <!-- for integers -->
+    	<context id="decimal" style-ref="decimal">
+				<match extended="true">
+				(?&lt;![\w\.])
+				[0-9]+[uUlL]*
+				(?![\w\.])
+				</match>
+			</context>
+
+		<!-- for identifiers -->
+	    <context id="rule">
+	      <start>[a-zA-Z_.][a-zA-Z0-9_.]*</start>
+	      <end>;</end>
+	      <include>
+	        <context sub-pattern="0" where="start" style-ref="rule"/>
+	        <context ref="comment"/>
+	        <context ref="decimal"/>
+	        <context ref="string"/>
+	      </include>
+	    </context>
+
+	  <!-- for data types -->
+	  	<context id="types" style-ref="type">
+	  		<keyword>Integer</keyword>
+	  		<keyword>String</keyword>
+	  	</context>
+
+	  <!-- Keywords -->
+	  	<context id="keywords" style-ref="keyword">
+	  		<keyword>alias</keyword>
+	  		<keyword>else</keyword>
+	  		<keyword>if</keyword>
+	  		<keyword>store</keyword>
+	  		<keyword>while</keyword>
+	  		<keyword>define</keyword>
+	  		<keyword>endif</keyword>
+	  		<keyword>ireturn</keyword>
+	  		<keyword>break</keyword>
+	  		<keyword>continue</keyword>
+	  		<keyword>do</keyword>
+	  		<keyword>endwhile</keyword>
+	  		<keyword>load</keyword>
+	  		<keyword>then</keyword>
+	  		<keyword>read</keyword>
+	  		<keyword>print</keyword>
+	  		<keyword>breakpoint</keyword>
+	  		<keyword>halt</keyword>
+	  		<keyword>inline</keyword>
+	  	</context>
+
+	  	<!-- for special constants -->
+	  	<context id="common-defines" style-ref="common-defines" class="common-defines">
+				<keyword>SCRATCHPAD</keyword>
+				<keyword>PAGE_TABLE</keyword>
+				<keyword>MEM_LIST</keyword>
+				<keyword>FILE_TABLE</keyword>
+				<keyword>READY_LIST</keyword>
+				<keyword>FAT</keyword>
+				<keyword>DISK_LIST</keyword>
+				<keyword>EX_HANDLER</keyword>
+				<keyword>T_INTERRUPT</keyword>
+				<keyword>INTERRUPT</keyword>
+				<keyword>USER_PROG</keyword>
+			</context>
+
+			<!-- main context -->
+			<context id="xos" class="no-spell-check">
+				<include>
+					<context ref="comments"/>
+					<context ref="escape-seq"/>
+					<context ref="rule"/>
+					<context ref="decimal"/>
+					<context ref="string"/>
+					<context ref="keywords"/>
+					<context ref="types"/>
+					<context ref="common-defines"/>
+				</include>
+			</context>
+		</definitions>
+	</language>
